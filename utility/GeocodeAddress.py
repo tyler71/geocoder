@@ -10,7 +10,7 @@ class GeocodeAddress:
     Takes address and returns class with lat long coordinates
     """
 
-    def __init__(self, address):
+    def __init__(self, address, *, api_keys=None):
         self.address = address
 
         self.decoded_address = None
@@ -18,7 +18,7 @@ class GeocodeAddress:
         self.longitude = None
         self.altitude = None
         self.raw = None
-        self.api_keys = None
+        self.api_keys = api_keys
 
         self.geocoders = [
                           self.googlev3_decode,
@@ -27,8 +27,7 @@ class GeocodeAddress:
                          ]
         random.shuffle(self.geocoders)
 
-    def int(self, api_keys):
-        self.api_keys = api_keys
+    def int(self):
 
         for geocoder in self.geocoders:
             try:
@@ -53,7 +52,7 @@ class GeocodeAddress:
 
     def googlev3_decode(self):
         api_key = self.api_keys.get('GoogleV3', None)
-        if api_key:
+        if api_key is not None:
             geolocator_service = GoogleV3(api_key)
         else:
             geolocator_service = GoogleV3()
@@ -65,7 +64,7 @@ class GeocodeAddress:
 
     def opencage_decode(self):
         api_key = self.api_keys.get('OpenCage', None)
-        if api_key:
+        if api_key is not None:
             geolocator_service = OpenCage(api_key=api_key)
             self.geosetter(geolocator_service)
         else:

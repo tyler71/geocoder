@@ -6,6 +6,8 @@ import sys
 import os
 import configparser
 
+from functools import partial
+
 from utility.GeocodeAddress import GeocodeAddress
 from utility.config import write_config
 from utility.content_iterator import csv_iterator
@@ -40,10 +42,12 @@ def main():
 
     if args.format == 'csv':
         print('address', 'latitude', 'longitude', sep=',')
+
+    geocoder = partial(GeocodeAddress, api_keys=api_keys)
     for file in args.files:
-        for geo_obj in csv_iterator(GeocodeAddress, file, column=args.column):
+        for geo_obj in csv_iterator(geocoder, file, column=args.column):
             try:
-                decoded = geo_obj.int(api_keys)
+                decoded = geo_obj.int()
             except LookupError:
                 print('No Address found at {address}'.format(address=geo_obj.address), file=sys.stderr)
             except KeyboardInterrupt:
@@ -56,7 +60,7 @@ def main():
                 'longitude': decoded.longitude,
             }
             print(output_formats[args.format](geo_info))
-            time.sleep(0.3)
+            time.sleep(0.2)
 
 
 if __name__ == '__main__':
