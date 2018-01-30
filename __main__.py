@@ -13,14 +13,15 @@ from utility.config import write_config
 from utility.content_iterator import csv_iterator
 from utility.output_formats import output_csv, output_json, output_python
 
-
 def main():
     output_formats = {
         'python': output_python,
         'json':  output_json,
         'csv': output_csv,
     }
-    parser = argparse.ArgumentParser(description="For each address in file, print Address, Latitude and Longitude of Address")
+    parser = argparse.ArgumentParser(prog="geocoder",
+                                     description="For each address in file, print Address, Latitude and Longitude of Address",
+                                    )
     parser.add_argument('-f', '--format',
                         choices=output_formats.keys(),
                         default='python',
@@ -29,7 +30,7 @@ def main():
                         default='addresses',
                         help='Which header to parse, default "addresses"')
     parser.add_argument('--config', default=os.path.dirname(os.path.realpath(__file__)) + '/config')
-    parser.add_argument('files', nargs='+')
+    parser.add_argument('files', metavar='Files', nargs='*', help="Files to process")
     args = parser.parse_args()
 
     if os.path.isfile(args.config):
@@ -37,8 +38,12 @@ def main():
         config.read(args.config)
         api_keys = dict(config['api_keys'])
     else:
+        print(f"Writing config file to {os.path.realpath(args.config)}", file=sys.stderr)
         write_config(args.config)
         api_keys = dict()
+
+    if len(args.files) < 1:
+        raise SystemExit("No files provided - Exiting")
 
     if args.format == 'csv':
         print('address', 'latitude', 'longitude', sep=',')
@@ -51,8 +56,7 @@ def main():
             except LookupError:
                 print('No Address found at {address}'.format(address=geo_obj.address), file=sys.stderr)
             except KeyboardInterrupt:
-                print('Keyboard Interruption, exiting')
-                sys.exit(1)
+                raise SystemExit("Keyboard Interruption, exiting")
 
             geo_info = {
                 'address': decoded.address,

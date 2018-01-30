@@ -4,3 +4,7 @@ utility/__pycache__/
 config
 
 \.idea/
+
+dist/
+
+__pycache__/

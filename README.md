@@ -1,5 +1,10 @@
-usage: __main__.py [-h] [-f {python,json,csv}] [-c COLUMN] [--config CONFIG]
-                   files [files ...]
+## usage: geocoder.py
+
+[-h]
+[-f {python,json,csv}]
+[-c COLUMN]
+[--config CONFIG]
+files [files ...]
 
 For each address in file, print Address, Latitude and Longitude of Address
 
