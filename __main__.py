@@ -13,19 +13,20 @@ from utility.config import write_config
 from utility.content_iterator import csv_iterator
 from utility.output_formats import output_csv, output_json, output_python
 
+
 def main():
     output_formats = {
         'python': output_python,
-        'json':  output_json,
+        'json': output_json,
         'csv': output_csv,
     }
     parser = argparse.ArgumentParser(prog="geocoder",
                                      description="For each address in file, print Address, Latitude and Longitude of Address",
-                                    )
+                                     )
     parser.add_argument('-f', '--format',
                         choices=output_formats.keys(),
                         default='python',
-                        help='Output format',)
+                        help='Output format')
     parser.add_argument('-c', '--column',
                         default='addresses',
                         help='Which header to parse, default "addresses"')

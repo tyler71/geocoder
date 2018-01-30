@@ -10,4 +10,3 @@ def write_config(file):
 
     with open(file, 'w') as file:
         config.write(file)
-
